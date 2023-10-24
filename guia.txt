@@ -1,0 +1,11 @@
+Concluir validação dos inputs
+
+Formatar saída dos dados
+
+Exibir as caixas sendo construídas para o usuário
+
+Fixar o número de caixas que serão executadas ao decorrer de uma sessão do programa
+
+Pesquisar maneiras de refatorar e encurtar o código
+
+Pesquisar melhores soluções de deploy para a aplicação
