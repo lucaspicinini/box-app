@@ -204,8 +204,8 @@ function caixaParaLista(caixa, index) {
     return `
         <li class="list-group-item d-flex justify-content-between lh-sm">
             <div>
-                <h6 class="my-0">${index + 1}° Caixa</h6>
-                <small class="text-body-secondary">Conteúdo da caixa: </small>
+                <h6 class="my-0">${index + 1}° Remessa</h6>
+                <small class="text-body-secondary">Conteúdo da(s) caixa(s): </small>
                 <p class="text-body-secondary">${caixa.itemNome}</p>
                 <p class="text-body-secondary">${caixa.itemQuant}</p>
                 <p class="text-body-secondary">${caixa.totalDeCaixas}</p>
