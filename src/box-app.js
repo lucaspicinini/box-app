@@ -67,6 +67,12 @@ const enableButtons = () => {
     sobraBotao.removeAttribute("disabled")
 }
 
+const disableButtons = () => {
+    
+    calcBotao.setAttribute("disabled", "")
+    sobraBotao.setAttribute("disabled", "")
+}
+
 const construtorDasSobras = (caixa) => {
     
     let obj = {}
@@ -106,8 +112,7 @@ sobraBotao.addEventListener("click", () => {
     listaSobras = []
     somaDeSobras = 0
     exibirConstrutor(listaSobras, somaDeSobras)
-    calcBotao.setAttribute("disabled", "")
-    sobraBotao.setAttribute("disabled", "")
+    disableButtons()
 })
 
 // Validation
@@ -130,8 +135,7 @@ function buttonValidation() {
         if(input.value === "" || input.valueAsNumber === "" || input.valueAsNumber === 0) {
 
             divs[index].classList.add("was-validated")
-            calcBotao.setAttribute("disabled", "")
-            sobraBotao.setAttribute("disabled", "")
+            disableButtons()
         }
     })
 
