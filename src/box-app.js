@@ -54,12 +54,10 @@ let listaRecursao = []
 let listaSobras = []
 let somaDeSobras = Number()
 
-const zerarListas = () => listaSobras = []
-
 const produzirCaixaVariada = (caixa) => {
 
     let newCaixa = new CaixaVariada(listaSobras, caixa.itensPorCaixa)
-    zerarListas()
+    listaSobras = []
     listarCaixas(newCaixa)
 }
 
@@ -105,7 +103,7 @@ sobraBotao.addEventListener("click", () => {
         itensPorCaixaElt.valueAsNumber
         )
     listarCaixas(newCaixa)
-    zerarListas()
+    listaSobras = []
     somaDeSobras = 0
     exibirConstrutor(listaSobras, somaDeSobras)
     calcBotao.setAttribute("disabled", "")
