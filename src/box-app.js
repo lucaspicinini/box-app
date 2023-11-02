@@ -38,9 +38,10 @@ class Caixa {
 
 class CaixaVariada {
 
-    constructor(itens = [], itensPorCaixa) {        
-        this.itemNome = itens.map((item) => item.nome)
-        this.itemQuant = itens.map((item) => item.quantidade)
+    constructor(itemNome = [], itemQuant = [], itensPorCaixa) {        
+
+        this.itemNome = itemNome
+        this.itemQuant = itemQuant
         this.itensPorCaixa = itensPorCaixa
         this.totalDeCaixas = 1
         this.sobra = 0
@@ -50,15 +51,12 @@ class CaixaVariada {
 // Global Variables and Control Functions
 
 const listaCaixas = []
-let listaRecursao = []
-let listaSobras = []
+let itens = []
+let sobras = []
 let somaDeSobras = Number()
 
-const produzirCaixaVariada = (caixa) => {
-
-    let newCaixa = new CaixaVariada(listaSobras, caixa.itensPorCaixa)
+const zerarListas = () => {
     listaSobras = []
-    listarCaixas(newCaixa)
 }
 
 const enableButtons = () => {
@@ -99,13 +97,14 @@ calcBotao.addEventListener("click", () => {
 sobraBotao.addEventListener("click", () => {
 
     let newCaixa = new CaixaVariada(
-        listaSobras,
+        itens,
+        sobras,
         itensPorCaixaElt.valueAsNumber
         )
     listarCaixas(newCaixa)
     listaSobras = []
     somaDeSobras = 0
-    exibirConstrutor(listaSobras, somaDeSobras)
+    exibirConstrutor(itens, sobras, somaDeSobras)
     calcBotao.setAttribute("disabled", "")
     sobraBotao.setAttribute("disabled", "")
 })
@@ -164,43 +163,53 @@ function somarSobra(caixa) {
     somaDeSobras += caixa.sobra
 
     if(somaDeSobras < caixa.itensPorCaixa) {
-        construtorDasSobras(caixa)
+        adicionarNasListas(caixa)
     }
     else if(somaDeSobras > caixa.itensPorCaixa) {
         construtorDasSobras(caixa)
         let diff = somaDeSobras - caixa.itensPorCaixa
         
-        for (let i = 0; diff > 0;) {
+        function tirarDiff(diff) {
 
-            if(listaSobras[i].quantidade < diff) {
-                diff -= listaSobras[i].quantidade
-                construtorDaRecursao(listaSobras[i])
-                listaSobras.shift()
-            }
-            else if(listaSobras[i].quantidade > diff) {
-                let quantFinal = listaSobras[i].quantidade - diff
-                listaSobras[i].quantidade = diff
-                construtorDaRecursao(listaSobras[i])
-                listaSobras[i].quantidade = quantFinal
-                diff = 0
-            } else {
-                construtorDaRecursao(listaSobras[i])
-                listaSobras.shift()
-                diff = 0
+            for (let i = 0; diff > 0;) {
+
+                if(listaSobras[i].quantidade < diff) {
+                    diff -= listaSobras[i].quantidade
+                    construtorDaRecursao(listaSobras[i])
+                    listaSobras.shift()
+                }
+                else if(listaSobras[i].quantidade > diff) {
+                    let quantFinal = listaSobras[i].quantidade - diff
+                    listaSobras[i].quantidade = diff
+                    construtorDaRecursao(listaSobras[i])
+                    listaSobras[i].quantidade = quantFinal
+                    diff = 0
+                } else {
+                    construtorDaRecursao(listaSobras[i])
+                    listaSobras.shift()
+                    diff = 0
+                }
             }
         }
+        tirarDiff(diff)
 
-        produzirCaixaVariada(caixa)
-        listaRecursao.map((sobra) => caixaInit(sobra.nome, sobra.quantidade, caixa.itensPorCaixa))
+        let newCaixa = new CaixaVariada(listaSobras, caixa.itensPorCaixa)
+        zerarListas()
+        listarCaixas(newCaixa)
+        listaRecursao.map((sobra) => {
+            caixaInit(sobra.nome, sobra.quantidade, caixa.itensPorCaixa)
+        })
         listaRecursao = []
     }
     else if(somaDeSobras === caixa.itensPorCaixa) {
         somaDeSobras = 0
         construtorDasSobras(caixa)
-        produzirCaixaVariada(caixa)
+        let newCaixa = new CaixaVariada(listaSobras, caixa.itensPorCaixa)
+        listarCaixas(newCaixa)
+        zerarListas()
     }
-    
-    exibirConstrutor(listaSobras, somaDeSobras)
+
+    exibirConstrutor(itens, sobras, somaDeSobras)
 }
 
 function caixaInit(itemNome, itemQuant, itensPorCaixa) {
@@ -235,8 +244,17 @@ function caixaParaLista(caixa, index) {
 }
 
 function exibirConstrutor(listaSobras = [], somaDeSobras) {
-
+    
     outputSobras.innerHTML = `Sobras: ${somaDeSobras}`
     outputConstrutor.innerHTML = ''    
-    return listaSobras.map((item) => outputConstrutor.innerHTML += `<li class="list-group-item">${item.nome}: ${item.quantidade} unidades</li>`)
+    return listaSobras.map((item) => {
+        outputConstrutor.innerHTML += construtorNaTela(item.nome, item.quantidade)
+    })
+}
+
+function construtorNaTela(itens, sobras) {
+
+    return `
+        <li class="list-group-item">${itens}: ${sobras} unidades</li>
+    `
 }
