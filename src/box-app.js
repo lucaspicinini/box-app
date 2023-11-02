@@ -32,27 +32,27 @@ class Caixa {
 
     tirarExcesso() {
 
-        return this.itemQuant -= this.sobra
+        this.itemQuant = this.itemQuant - this.sobra
+        return this.itemQuant
     }
 }
 
 class CaixaVariada {
 
-    constructor(itemNome = [], itemQuant = [], itensPorCaixa) {        
-
-        this.itemNome = itemNome
-        this.itemQuant = itemQuant
+    constructor(itens = [], itensPorCaixa) {        
+        this.itemNome = itens.map((item) => item.nome)
+        this.itemQuant = itens.map((item) => item.quantidade)
         this.itensPorCaixa = itensPorCaixa
         this.totalDeCaixas = 1
         this.sobra = 0
     }
 }
 
-// Global Variables and Control Functions
+// Global Variables and Control Function
 
 const listaCaixas = []
-let itens = []
-let sobras = []
+let listaRecursao = []
+let listaSobras = []
 let somaDeSobras = Number()
 
 const zerarListas = () => {
@@ -60,21 +60,9 @@ const zerarListas = () => {
 }
 
 const enableButtons = () => {
-
     calcBotao.removeAttribute("disabled")
     sobraBotao.removeAttribute("disabled")
 }
-
-const construtorDasSobras = (caixa) => {
-    
-    let obj = {}
-    obj.nome = caixa.itemNome
-    obj.quantidade = caixa.sobra
-    listaSobras.push(obj)
-    listaSobras.sort((a, b) => a.quantidade - b.quantidade);
-}
-
-const construtorDaRecursao = (sobraRecursao) => listaRecursao.push({...sobraRecursao})
 
 // Listeners
 
@@ -97,14 +85,13 @@ calcBotao.addEventListener("click", () => {
 sobraBotao.addEventListener("click", () => {
 
     let newCaixa = new CaixaVariada(
-        itens,
-        sobras,
+        listaSobras,
         itensPorCaixaElt.valueAsNumber
         )
     listarCaixas(newCaixa)
-    listaSobras = []
+    zerarListas()
     somaDeSobras = 0
-    exibirConstrutor(itens, sobras, somaDeSobras)
+    exibirConstrutor(listaSobras, somaDeSobras)
     calcBotao.setAttribute("disabled", "")
     sobraBotao.setAttribute("disabled", "")
 })
@@ -158,12 +145,31 @@ function filtro(caixa) {
     }
 }
 
+function construtorDasSobras(caixa) {
+    const criarObjeto = (caixa) => {
+        let obj = {}
+        obj.nome = caixa.itemNome
+        obj.quantidade = caixa.sobra
+
+        return obj
+    }
+
+    listaSobras.push(criarObjeto(caixa))
+    listaSobras.sort((a, b) => a.quantidade - b.quantidade);
+}
+
+function construtorDaRecursao(sobraRecursao) {
+
+    let novoObj = {...sobraRecursao}
+    listaRecursao.push(novoObj)
+}
+
 function somarSobra(caixa) {
     
     somaDeSobras += caixa.sobra
 
     if(somaDeSobras < caixa.itensPorCaixa) {
-        adicionarNasListas(caixa)
+        construtorDasSobras(caixa)
     }
     else if(somaDeSobras > caixa.itensPorCaixa) {
         construtorDasSobras(caixa)
@@ -208,8 +214,8 @@ function somarSobra(caixa) {
         listarCaixas(newCaixa)
         zerarListas()
     }
-
-    exibirConstrutor(itens, sobras, somaDeSobras)
+    
+    exibirConstrutor(listaSobras, somaDeSobras)
 }
 
 function caixaInit(itemNome, itemQuant, itensPorCaixa) {
@@ -225,7 +231,9 @@ function listarCaixas(caixa) {
 
     listaCaixas.push(caixa)
     boxlist.innerHTML = ''
-    return listaCaixas.map((caixa, index) => boxlist.innerHTML += caixaParaLista(caixa, index))
+    return listaCaixas.map((caixa, index) => {
+        boxlist.innerHTML += caixaParaLista(caixa, index)
+    })
 }
 
 function caixaParaLista(caixa, index) {
