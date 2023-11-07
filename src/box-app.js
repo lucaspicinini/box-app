@@ -64,17 +64,6 @@ const enableButtons = () => {
     sobraBotao.removeAttribute("disabled")
 }
 
-const construtorDasSobras = (caixa) => {
-    
-    let obj = {}
-    obj.nome = caixa.itemNome
-    obj.quantidade = caixa.sobra
-    listaSobras.push(obj)
-    listaSobras.sort((a, b) => a.quantidade - b.quantidade);
-}
-
-const construtorDaRecursao = (sobraRecursao) => listaRecursao.push({...sobraRecursao})
-
 // Listeners
 
 calcBotao.addEventListener("click", () => {
@@ -103,7 +92,8 @@ sobraBotao.addEventListener("click", () => {
     zerarListas()
     somaDeSobras = 0
     exibirConstrutor(listaSobras, somaDeSobras)
-    disableButtons()
+    calcBotao.setAttribute("disabled", "")
+    sobraBotao.setAttribute("disabled", "")
 })
 
 // Validation
@@ -126,7 +116,8 @@ function buttonValidation() {
         if(input.value === "" || input.valueAsNumber === "" || input.valueAsNumber === 0) {
 
             divs[index].classList.add("was-validated")
-            disableButtons()
+            calcBotao.setAttribute("disabled", "")
+            sobraBotao.setAttribute("disabled", "")
         }
     })
 
